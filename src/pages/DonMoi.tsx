@@ -11,23 +11,21 @@ export default function DonMoi() {
     try {
       const res = await api.get("/admin/workflow/barista-orders");
       const list = res.data.data || [];
+const mapped: Order[] = list.map((o: any) => ({
+  id: o.Id.toString(),
+  orderNumber: "#" + o.Id,
+  customerName: o.UserId ?? "Khách lẻ",
+  type: "take-away",
+  status: o.Status === "Accepted" ? "new" : "making",
+  time: o.CreatedAt.substring(11, 16),
 
-      const mapped: Order[] = list
-        .filter((o: any) => o.Status === "pending")
-        .map((o: any) => ({
-          id: o.Id.toString(),
-          orderNumber: "#" + o.Id,
-          customerName: o.CustomerName,
-          type: o.Type || "takeaway",
-          status: "new",
-          time: o.CreatedAt.substring(11, 16),
-          items: o.Items.map(i => ({
-            name: i.ProductName,
-            size: i.Size,
-            quantity: i.Quantity
-          }))
+  items: (o.Items || []).map((i: any) => ({
+    name: i.ProductName,
+    size: i.Size,
+    quantity: i.Quantity
+  }))
+}));
 
-        }));
 
       setOrders(mapped);
     } catch (err) {
@@ -39,6 +37,10 @@ export default function DonMoi() {
 
   useEffect(() => {
     loadOrders();
+
+    // Auto refresh 10s một lần
+    const timer = setInterval(() => loadOrders(), 10000);
+    return () => clearInterval(timer);
   }, []);
 
   return (
@@ -48,7 +50,7 @@ export default function DonMoi() {
       {loading ? (
         <p>Đang tải...</p>
       ) : (
-        <OrderBoard orders={orders} onUpdateStatus={() => { }} />
+        <OrderBoard orders={orders} onUpdateStatus={loadOrders} />
       )}
     </div>
   );

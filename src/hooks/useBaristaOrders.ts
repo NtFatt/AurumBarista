@@ -6,52 +6,77 @@ export const useBaristaOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // ==========================================
+  // LOAD ORDERS TỪ BE
+  // ==========================================
   const loadOrders = async () => {
     try {
       setLoading(true);
-      const data = await BaristaOrderAPI.getOrders();
 
-      const mapped: Order[] = data.map((o: any) => ({
-        id: o.Id.toString(),
-        orderNumber: "#" + o.Id,
-        customerName: o.CustomerName,
-        type: o.Type || "takeaway",
-        status:
-          o.Status === "pending"
-            ? ("new" as OrderStatus)
-            : o.Status === "making"
-            ? ("brewing" as OrderStatus)
-            : ("done" as OrderStatus),
-        time: o.CreatedAt.substring(11, 16),
-        items: o.Items.map((i: any) => ({
-          name: i.ProductName,
-          size: i.Size,
-          quantity: i.Quantity,
-          notes: i.Notes,
-        })),
-      }));
+      const res = await BaristaOrderAPI.getOrders();
+
+      // LUÔN LẤY MẢNG CHO CHẮC
+      const data = Array.isArray(res.data?.data) ? res.data.data : [];
+
+      const mapped: Order[] = data.map((o: any) => {
+        const rawItems = Array.isArray(o.Items) ? o.Items : [];
+
+        return {
+          id: String(o.Id),
+          orderNumber: "#" + o.Id,
+
+          customerName: o.CustomerName ?? "",
+
+          type: o.Type ?? "takeaway",
+
+          // MAP STATUS CHUẨN
+          status:
+            o.Status === "accepted" || o.Status === "making"
+              ? ("done" as OrderStatus)
+
+              : o.Status?.toLowerCase() === "done"
+                ? ("done" as OrderStatus)
+                : ("new" as OrderStatus),
+
+          time:
+            typeof o.CreatedAt === "string"
+              ? o.CreatedAt.substring(11, 16)
+              : "",
+
+          // ITEMS
+          items: rawItems.map((i: any) => ({
+            name: i.ProductName,
+            quantity: i.Quantity,
+            size: i.Size ?? null,
+            notes: i.Notes ?? "",
+          })),
+        };
+      });
 
       setOrders(mapped);
+    } catch (error) {
+      console.error("LOAD BARISTA ORDERS ERROR:", error);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
   };
 
-const updateStatus = async (id: string, newStatus: OrderStatus) => {
-  if (newStatus === "new") return; // Barista không được set "new"
+  // ==========================================
+  // UPDATE STATUS
+  // ==========================================
+  const updateStatus = async (id: string, newStatus: OrderStatus) => {
+    if (newStatus === "new") return;
 
-  await BaristaOrderAPI.updateStatus(
-    Number(id),
-    newStatus as "brewing" | "done"
-  );
+    await BaristaOrderAPI.updateStatus(
+      Number(id),
+      newStatus as "brewing" | "done"
+    );
 
-  setOrders((prev) =>
-    prev.map((o) =>
-      o.id === id ? { ...o, status: newStatus } : o
-    )
-  );
-};
-
+    setOrders((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, status: newStatus } : o))
+    );
+  };
 
   useEffect(() => {
     loadOrders();
@@ -62,6 +87,7 @@ const updateStatus = async (id: string, newStatus: OrderStatus) => {
     loading,
     updateStatus,
     refresh: loadOrders,
+
     newOrders: orders.filter((o) => o.status === "new"),
     brewingOrders: orders.filter((o) => o.status === "brewing"),
     doneOrders: orders.filter((o) => o.status === "done"),

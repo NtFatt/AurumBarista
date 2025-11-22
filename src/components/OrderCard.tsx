@@ -53,9 +53,9 @@ export const OrderCard = ({ order, onStatusChange, onViewDetails }: OrderCardPro
   const config = statusConfig[order.status];
 
   return (
-    <Card 
+    <Card
       className={cn(
-        "overflow-hidden transition-all hover:shadow-md cursor-pointer", 
+        "overflow-hidden transition-all hover:shadow-md cursor-pointer",
         `border-l-4 ${config.border}`
       )}
       onClick={() => onViewDetails?.(order)}
@@ -131,18 +131,20 @@ export const OrderCard = ({ order, onStatusChange, onViewDetails }: OrderCardPro
               >
                 Xem công thức
               </Button>
+
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onStatusChange?.(order.id, "brewing");
+                  onStatusChange?.(order.id, "done");   // đổi từ "brewing" → "done"
                 }}
-                className="flex-1 bg-status-brewing hover:bg-status-brewing/90 text-status-brewing-foreground"
+                className="flex-1 bg-status-done hover:bg-status-done/90 text-status-done-foreground"
                 size="sm"
               >
-                Bắt đầu pha
+                Hoàn thành
               </Button>
             </>
           )}
+
           {order.status === "brewing" && (
             <>
               <Button
@@ -169,13 +171,13 @@ export const OrderCard = ({ order, onStatusChange, onViewDetails }: OrderCardPro
             </>
           )}
           {order.status === "done" && (
-            <Button 
+            <Button
               onClick={(e) => {
                 e.stopPropagation();
                 onViewDetails?.(order);
               }}
-              variant="outline" 
-              className="flex-1" 
+              variant="outline"
+              className="flex-1"
               size="sm"
             >
               Xem chi tiết
