@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
 const login = async (email: string, password: string) => {
   console.log(">>> BARISTA LOGIN CALLED");
 
-  const res = await api.post("/api/admin/auth/login", { email, password });
+  const res = await api.post("/employee/auth/login", { email, password });
 
   console.log(">>> RECEIVED:", res.data);
 

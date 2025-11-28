@@ -18,54 +18,40 @@ export const useBaristaOrders = () => {
       const data = Array.isArray(res.data?.data) ? res.data.data : [];
 
       const mapped: Order[] = data.map((o: any) => {
-        const rawItems = Array.isArray(o.Items) ? o.Items : [];
-        const dbStatus = o.Status?.toLowerCase();
+        const rawItems = Array.isArray(o.items) ? o.items : [];
 
         return {
-          id: String(o.Id),
-          orderNumber: "#" + o.Id,
-          customerName: o.CustomerName ?? "",
-          type: o.Type ?? "takeaway",
+          id: String(o.id),                       // FIX
+          orderNumber: "#" + o.id,                // FIX
+          customerName: o.customerName ?? "",
+          type: o.type ?? "takeaway",
 
-          // 🛠️ MAP STATUS CHUẨN ĐÃ SỬA
           status:
-            // 1. Trạng thái ĐANG PHA CHẾ (Đã bắt đầu làm)
-            dbStatus === "preparing" ||
-            dbStatus === "making"
-              ? ("brewing" as OrderStatus)
+            o.status === "preparing" || o.status === "making"
+              ? "brewing"
+              : o.status === "waiting"
+                ? "new"
+                : o.status === "done" || o.status === "completed"
+                  ? "done"
+                  : "new",
 
-            // 2. Trạng thái ĐƠN MỚI (Đã được Cashier chuyển qua, Barista cần xác nhận)
-            // ✅ FIX: Đảm bảo 'waiting' map thành "new" trên UI
-            : dbStatus === "waiting" 
-              ? ("new" as OrderStatus)
-            
-            // 3. Trạng thái HOÀN TẤT/KẾT THÚC
-            : dbStatus === "done" ||
-              dbStatus === "completed" || 
-              dbStatus === "cancelled"
-              ? ("done" as OrderStatus)
+          time: o.createdAt
+            ? String(o.createdAt).substring(11, 16)
+            : "",
 
-            // 4. Mặc định là ĐƠN MỚI (Cho đơn hàng vừa tạo)
-            : ("new" as OrderStatus),
-
-          time:
-            typeof o.CreatedAt === "string"
-              ? o.CreatedAt.substring(11, 16)
-              : "",
-
-          // ITEMS
           items: rawItems.map((i: any) => ({
-            name: i.ProductName,
-            quantity: i.Quantity,
-            size: i.Size ?? null,
-            notes: i.Notes ?? "",
+            id: i.id,                             // FIX — giúp OrderCard không báo lỗi
+            name: i.name,
+            quantity: i.quantity,
+            size: i.size ?? "",
+            notes: i.notes ?? "",
           })),
         };
       });
 
+
       setOrders(mapped);
     } catch (error) {
-      console.error("LOAD BARISTA ORDERS ERROR:", error);
       setOrders([]);
     } finally {
       setLoading(false);
@@ -84,14 +70,14 @@ export const useBaristaOrders = () => {
     await BaristaOrderAPI.updateStatus(
       Number(id),
       // newStatus sẽ là 'brewing' (để gọi start-making) hoặc 'done'
-      newStatus as "brewing" | "done" 
+      newStatus as "brewing" | "done"
     );
 
     // Cập nhật trạng thái ngay lập tức trên UI (trước khi refresh)
     setOrders((prev) =>
       prev.map((o) => (o.id === id ? { ...o, status: newStatus } : o))
     );
-    
+
     // Nếu bạn muốn đơn hàng chuyển từ tab này sang tab khác ngay lập tức, bạn phải 
     // đảm bảo gọi refresh() sau khi updateStatus thành công (như đã làm trong PhaChe.tsx).
     // Nếu bạn gọi refresh ở đây, nó sẽ gây loop vô hạn nếu hook khác cũng gọi update.

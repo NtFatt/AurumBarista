@@ -15,6 +15,12 @@ export default function DonMoi() {
     refresh // Hàm tải lại dữ liệu từ BE
   } = useBaristaOrders();
 
+  orders.forEach((o, idx) => {
+    console.log(
+      `Order[${idx}] id =`, o?.id,
+      "| keys =", Object.keys(o)
+    );
+  });
   // ✅ FIX: TẠO HÀM BAO BỌC để gọi refresh() sau khi updateStatus
   const handleStatusChange = useCallback(async (orderId, newStatus) => {
     try {

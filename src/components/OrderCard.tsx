@@ -14,6 +14,7 @@ export interface Order {
   status: OrderStatus;
   time: string;
   items: Array<{
+    id: number;
     name: string;
     size: string;
     quantity: number;
@@ -82,14 +83,15 @@ export const OrderCard = ({ order, onStatusChange, onViewDetails }: OrderCardPro
 
         {/* Items */}
         <div className="space-y-2">
-          {order.items.map((item, idx) => (
-            <div key={idx} className="text-sm">
+          {order.items.map((item) => (
+            <div key={item.id} className="text-sm">
               <div className="flex justify-between">
                 <span className="font-medium">
-                  {item.name} ({item.size}) {/* ĐÃ SỬA: Xóa chữ "Ghi chú:" thừa */}
+                  {item.name} ({item.size})
                 </span>
                 <span className="text-muted-foreground">x{item.quantity}</span>
               </div>
+
               {item.notes && (
                 <p className="text-xs text-muted-foreground mt-1 flex items-start gap-1">
                   <MessageSquare className="w-3 h-3 mt-0.5 flex-shrink-0" />
@@ -99,6 +101,7 @@ export const OrderCard = ({ order, onStatusChange, onViewDetails }: OrderCardPro
             </div>
           ))}
         </div>
+
 
         {/* Order Notes */}
         {order.notes && (
