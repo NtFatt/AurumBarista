@@ -3,19 +3,22 @@ import { NavLink } from "@/components/NavLink";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
+import { useShiftStore } from "@/components/shiftStore";
+
+
 export const Sidebar = () => {
+  const { shift } = useShiftStore();
+
   const navItems = [
     {
       title: "Đơn hàng hôm nay",
       icon: Package,
       path: "/don-moi",
-      badge: 3,
     },
     {
       title: "Đang pha chế",
       icon: Coffee,
       path: "/pha-che",
-      badge: 2,
       isActive: true,
     },
     {
@@ -28,15 +31,11 @@ export const Sidebar = () => {
       icon: Search,
       path: "/cong-thuc",
     },
-    {
-      title: "Cài đặt cá nhân",
-      icon: Settings,
-      path: "/cai-dat",
-    },
   ];
 
   return (
     <aside className="w-64 bg-card border-r border-border h-screen flex flex-col">
+
       {/* Logo & Header */}
       <div className="p-6 border-b border-border">
         <div className="flex items-center gap-3">
@@ -44,7 +43,7 @@ export const Sidebar = () => {
             <Coffee className="w-6 h-6 text-accent-foreground" />
           </div>
           <div>
-            <h1 className="font-bold text-lg text-foreground">Phúc Long</h1>
+            <h1 className="font-bold text-lg text-foreground">Aurum</h1>
             <p className="text-xs text-muted-foreground">Barista Station</p>
           </div>
         </div>
@@ -64,17 +63,7 @@ export const Sidebar = () => {
           >
             <item.icon className="w-5 h-5 flex-shrink-0" />
             <span className="flex-1">{item.title}</span>
-            {item.badge !== undefined && (
-              <Badge
-                variant="secondary"
-                className={cn(
-                  "ml-auto",
-                  item.isActive && "bg-accent-foreground/20 text-accent-foreground"
-                )}
-              >
-                {item.badge}
-              </Badge>
-            )}
+
           </NavLink>
         ))}
       </nav>
@@ -87,7 +76,9 @@ export const Sidebar = () => {
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-medium text-sm text-foreground truncate">Barista</p>
-            <p className="text-xs text-muted-foreground">Ca làm việc: Sáng</p>
+            <p className="text-xs text-muted-foreground">
+              Ca làm việc: {shift}
+            </p>
           </div>
         </div>
       </div>

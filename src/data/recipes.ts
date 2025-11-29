@@ -21,11 +21,11 @@ export interface Recipe {
 
 export const recipes: Record<string, Recipe> = {
   "tra-sua-phuc-long-m": {
-    productName: "Trà sữa Phúc Long",
+    productName: "Trà sữa Aurum",
     size: "M",
     preparationTime: "3-4 phút",
     ingredients: [
-      { name: "Trà Oolong Phúc Long", amount: "40", unit: "ml" },
+      { name: "Trà Oolong Aurum", amount: "40", unit: "ml" },
       { name: "Sữa tươi", amount: "120", unit: "ml" },
       { name: "Đường syrup", amount: "20", unit: "ml" },
       { name: "Đá viên", amount: "150", unit: "g" },
@@ -47,11 +47,11 @@ export const recipes: Record<string, Recipe> = {
     ],
   },
   "tra-sua-phuc-long-l": {
-    productName: "Trà sữa Phúc Long",
+    productName: "Trà sữa Aurum",
     size: "L",
     preparationTime: "3-4 phút",
     ingredients: [
-      { name: "Trà Oolong Phúc Long", amount: "60", unit: "ml" },
+      { name: "Trà Oolong Aurum", amount: "60", unit: "ml" },
       { name: "Sữa tươi", amount: "180", unit: "ml" },
       { name: "Đường syrup", amount: "30", unit: "ml" },
       { name: "Đá viên", amount: "200", unit: "g" },
@@ -76,7 +76,7 @@ export const recipes: Record<string, Recipe> = {
     size: "M",
     preparationTime: "2-3 phút",
     ingredients: [
-      { name: "Cà phê Robusta Phúc Long", amount: "25", unit: "g" },
+      { name: "Cà phê Robusta Aurum", amount: "25", unit: "g" },
       { name: "Sữa đặc có đường", amount: "40", unit: "ml" },
       { name: "Nước nóng 95°C", amount: "120", unit: "ml" },
       { name: "Đá viên", amount: "150", unit: "g" },
@@ -99,7 +99,7 @@ export const recipes: Record<string, Recipe> = {
     size: "L",
     preparationTime: "3-4 phút",
     ingredients: [
-      { name: "Cà phê Robusta Phúc Long", amount: "35", unit: "g" },
+      { name: "Cà phê Robusta Aurum", amount: "35", unit: "g" },
       { name: "Sữa đặc có đường", amount: "60", unit: "ml" },
       { name: "Nước nóng 95°C", amount: "180", unit: "ml" },
       { name: "Đá viên", amount: "200", unit: "g" },
@@ -147,7 +147,7 @@ export const recipes: Record<string, Recipe> = {
     size: "L",
     preparationTime: "2 phút",
     ingredients: [
-      { name: "Trà Oolong Phúc Long", amount: "8", unit: "g" },
+      { name: "Trà Oolong Aurum", amount: "8", unit: "g" },
       { name: "Nước lọc 90°C", amount: "400", unit: "ml" },
       { name: "Đá viên", amount: "200", unit: "g" },
       { name: "Đường syrup (optional)", amount: "0", unit: "ml" },
@@ -171,7 +171,7 @@ export const recipes: Record<string, Recipe> = {
     size: "M",
     preparationTime: "3 phút",
     ingredients: [
-      { name: "Cà phê Robusta Phúc Long", amount: "25", unit: "g" },
+      { name: "Cà phê Robusta Aurum", amount: "25", unit: "g" },
       { name: "Nước nóng 95°C", amount: "150", unit: "ml" },
       { name: "Đá viên", amount: "150", unit: "g" },
       { name: "Đường (optional)", amount: "10", unit: "g" },
